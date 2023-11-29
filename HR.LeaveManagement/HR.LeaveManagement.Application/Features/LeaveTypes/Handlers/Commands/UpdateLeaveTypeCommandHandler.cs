@@ -38,7 +38,7 @@ namespace HR.LeaveManagement.Application.Features.LeaveTypes.Handlers.Commands
 
 			var leaveType = await leaveTypeRepository.GetAsync(request.LeaveTypeDto.Id);
 
-			mapper.Map(leaveType, request.LeaveTypeDto);
+			mapper.Map(request.LeaveTypeDto, leaveType);
 
 			await leaveTypeRepository.UpdateAsync(leaveType);
 			return Unit.Value;

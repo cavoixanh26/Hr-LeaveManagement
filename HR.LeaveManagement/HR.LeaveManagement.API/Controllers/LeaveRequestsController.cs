@@ -41,7 +41,7 @@ namespace HR.LeaveManagement.API.Controllers
 
 		// POST api/<LeaveRequestController>
 		[HttpPost]
-		public async Task<ActionResult> Post([FromBody] CreateLeaveRequestDto request)
+		public async Task<ActionResult<BaseCommandResponse>> Post([FromBody] CreateLeaveRequestDto request)
 		{
 			var command = new CreateLeaveRequestCommand { LeaveRequestDto = request };
 			var repsonse = await mediator.Send(command);
