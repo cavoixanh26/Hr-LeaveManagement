@@ -25,7 +25,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HR.LeaveManagement.API", "H
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{4F97F689-CECB-4CCF-93D4-165216EC4303}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HR.LeaveManagement.MVC", "HR.LeaveManagement.MVC\HR.LeaveManagement.MVC.csproj", "{D0EC42EE-8D3A-4A6F-AB75-CE41F3D2153E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HR.LeaveManagement.MVC", "HR.LeaveManagement.MVC\HR.LeaveManagement.MVC.csproj", "{D0EC42EE-8D3A-4A6F-AB75-CE41F3D2153E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HR.LeaveManagement.Identity", "HR.LeaveManagement.Identity\HR.LeaveManagement.Identity.csproj", "{1F66C6D5-F8C1-4FB6-9D11-E69DEAB60BB3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{D0EC42EE-8D3A-4A6F-AB75-CE41F3D2153E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0EC42EE-8D3A-4A6F-AB75-CE41F3D2153E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0EC42EE-8D3A-4A6F-AB75-CE41F3D2153E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F66C6D5-F8C1-4FB6-9D11-E69DEAB60BB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F66C6D5-F8C1-4FB6-9D11-E69DEAB60BB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F66C6D5-F8C1-4FB6-9D11-E69DEAB60BB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F66C6D5-F8C1-4FB6-9D11-E69DEAB60BB3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -72,6 +78,7 @@ Global
 		{B9770284-B769-4577-BE0F-B9112B3DE33D} = {1CF14A6D-E8BD-4DC8-B48B-E74C44432EEC}
 		{4F97F689-CECB-4CCF-93D4-165216EC4303} = {82CE1B45-CCE7-462E-9A4D-196384149393}
 		{D0EC42EE-8D3A-4A6F-AB75-CE41F3D2153E} = {4F97F689-CECB-4CCF-93D4-165216EC4303}
+		{1F66C6D5-F8C1-4FB6-9D11-E69DEAB60BB3} = {B60BA3CC-74C3-437D-9211-92326A73D31F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {32F24B44-07B6-4033-86EE-AC442660D5B5}
