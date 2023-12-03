@@ -19,7 +19,7 @@ namespace HR.LeaveManagement.MVC.Models
 
 		public bool Cancelled { get; set; }
 		public LeaveTypeVM LeaveType { get; set; }
-		//public EmployeeVM Employee { get; set; }
+		public EmployeeVM Employee { get; set; }
 	}
 
 	public class CreateLeaveRequestVM

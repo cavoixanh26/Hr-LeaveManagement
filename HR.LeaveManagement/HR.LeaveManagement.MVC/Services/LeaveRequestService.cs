@@ -1,19 +1,67 @@
-﻿using HR.LeaveManagement.MVC.Contracts;
+﻿using AutoMapper;
+using HR.LeaveManagement.MVC.Contracts;
 using HR.LeaveManagement.MVC.Models;
 using HR.LeaveManagement.MVC.Services.Base;
 
 namespace HR.LeaveManagement.MVC.Services
 {
-	public class LeaveRequestService : ILeaveRequestService
+	public class LeaveRequestService : BaseHttpService, ILeaveRequestService
 	{
-		public Task ApproveLeaveRequest(int id, bool approved)
+        private readonly IMapper mapper;
+
+        public LeaveRequestService(
+			IClient client, 
+			ILocalStorageService localStorage,
+			IMapper mapper) 
+			: base(client, localStorage)
+        {
+            this.mapper = mapper;
+        }
+
+        public async Task ApproveLeaveRequest(int id, bool approved)
 		{
-			throw new NotImplementedException();
+			AddBearerToken();
+			try
+			{
+				var request = new ChangeLeaveRequestApprovalDto
+				{
+					Id = id,
+					Approved = approved
+				};
+				await client.ChangeapprovalAsync(id, request);
+			}
+			catch (Exception)
+			{
+				throw;
+			}
 		}
 
-		public Task<Response<int>> CreateLeaveRequest(CreateLeaveRequestVM leaveRequest)
+		public async Task<Response<int>> CreateLeaveRequest(CreateLeaveRequestVM leaveRequest)
 		{
-			throw new NotImplementedException();
+			try
+			{
+                var response = new Response<int>();
+                AddBearerToken();
+                var createLeaveRequestDto = mapper.Map<CreateLeaveRequestDto>(leaveRequest);
+                var apiResponse = await client.LeaveRequestsPOSTAsync(createLeaveRequestDto);
+                if (apiResponse.Success)
+                {
+                    response.Data = apiResponse.Id;
+                    response.Success = true;
+                }
+                else
+                {
+                    foreach (var error in apiResponse.Errors)
+                    {
+                        response.ValidationErrors += error + Environment.NewLine;
+                    }
+                }
+                return response;
+            }
+			catch (ApiException ex)
+			{
+				return ConvertApiExceptions<int>(ex);
+			}
 		}
 
 		public Task DeleteLeaveRequest(int id)
@@ -21,15 +69,31 @@ namespace HR.LeaveManagement.MVC.Services
 			throw new NotImplementedException();
 		}
 
-		public Task<AdminLeaveRequestViewVM> GetAdminLeaveRequestList()
+		public async Task<AdminLeaveRequestViewVM> GetAdminLeaveRequestList()
 		{
-			throw new NotImplementedException();
+			AddBearerToken();
+			var leaveRequest = await client.LeaveRequestsAllAsync(isLogggedInUser: false);
+
+			var model = new AdminLeaveRequestViewVM
+			{
+				TotalRequests = leaveRequest.Count,
+				ApprovedRequests = leaveRequest.Count(x => x.Approved == true),
+				PendingRequests = leaveRequest.Count(x => x.Approved is null),
+				RejectedRequests = leaveRequest.Count(x => x.Approved == false),
+				LeaveRequests = mapper.Map<List<LeaveRequestVM>>(leaveRequest)
+			};
+
+			return model;
 		}
 
-		public Task<LeaveRequestVM> GetLeaveRequest(int id)
+		public async Task<LeaveRequestVM> GetLeaveRequest(int id)
 		{
-			throw new NotImplementedException();
-		}
+			AddBearerToken();
+			var leaveRequest = await client.LeaveRequestsGETAsync(id);
+			var leaveRequestVM = mapper.Map<LeaveRequestVM>(leaveRequest);
+
+			return leaveRequestVM;
+        }
 
 		public Task<EmployeeLeaveRequestViewVM> GetUserLeaveRequests()
 		{

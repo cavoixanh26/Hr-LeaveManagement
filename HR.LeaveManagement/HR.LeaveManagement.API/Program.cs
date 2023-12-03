@@ -6,6 +6,8 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpContextAccessor();
+
 // Add services to the container.
 builder.Services.ConfigureApplicationServices();
 builder.Services.ConfigureInfrastructuresService(builder.Configuration);

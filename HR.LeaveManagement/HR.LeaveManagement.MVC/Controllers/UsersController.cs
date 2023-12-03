@@ -21,13 +21,13 @@ namespace HR.LeaveManagement.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginVM request, string returnUrl)
         {
-            if (ModelState.IsValid)
-            {
+            //if (ModelState.IsValid)
+            //{
                 returnUrl ??= Url.Content("~/");
                 var isLoggedIn = await authenticationService.Authenticate(request.Email, request.Password);
                 if (isLoggedIn)
                     return LocalRedirect(returnUrl);
-            }
+            //}
 
             ModelState.AddModelError("", "Log In Attempt Failed. Please try again.");
             return View(request);
