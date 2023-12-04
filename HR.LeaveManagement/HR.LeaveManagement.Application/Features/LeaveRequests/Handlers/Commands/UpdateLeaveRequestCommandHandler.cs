@@ -23,7 +23,8 @@ namespace HR.LeaveManagement.Application.Features.LeaveRequests.Handlers.Command
         public async Task<Unit> Handle(UpdateLeaveRequestCommand request, CancellationToken cancellationToken)
         {
             var leaveRequest = await unitOfWork.LeaveRequestRepository.GetAsync(request.Id);
-
+            if (leaveRequest is null)
+                throw new NotFoundException(nameof(leaveRequest), request.Id);
 
             if (request.LeaveRequestDto != null)
             {

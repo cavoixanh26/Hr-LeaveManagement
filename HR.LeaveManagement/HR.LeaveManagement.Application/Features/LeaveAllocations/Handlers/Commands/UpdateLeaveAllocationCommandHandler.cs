@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using HR.LeaveManagement.Application.Contracts.Persistences;
 using HR.LeaveManagement.Application.DTOs.LeaveAllocation.Validators;
 using HR.LeaveManagement.Application.DTOs.LeaveType.Validators;
 using HR.LeaveManagement.Application.Exceptions;
@@ -16,17 +17,14 @@ namespace HR.LeaveManagement.Application.Features.LeaveAllocations.Handlers.Comm
 	public class UpdateLeaveAllocationCommandHandler 
 		: IRequestHandler<UpdateLeaveAllocationCommand, Unit>
 	{
-		private readonly ILeaveAllocationRepository leaveAllocationRepository;
-		private readonly ILeaveTypeRepository leaveTypeRepository;
+		private readonly IUnitOfWork unitOfWork;
 		private readonly IMapper mapper;
 
 		public UpdateLeaveAllocationCommandHandler(
-			ILeaveAllocationRepository leaveAllocationRepository,
-			ILeaveTypeRepository leaveTypeRepository,
+            IUnitOfWork unitOfWork,
 			IMapper mapper)
 		{
-			this.leaveAllocationRepository = leaveAllocationRepository;
-			this.leaveTypeRepository = leaveTypeRepository;
+			this.unitOfWork = unitOfWork;
 			this.mapper = mapper;
 		}
 
@@ -34,7 +32,7 @@ namespace HR.LeaveManagement.Application.Features.LeaveAllocations.Handlers.Comm
 			CancellationToken cancellationToken)
 		{
 			// validator
-			var validator = new UpdateLeaveAllocationDtoValidator(leaveTypeRepository);
+			var validator = new UpdateLeaveAllocationDtoValidator(unitOfWork.LeaveTypeRepository);
 			var validationResult = await validator.ValidateAsync(request.LeaveAllocationDto);
 
 			if (!validationResult.IsValid)
@@ -42,12 +40,15 @@ namespace HR.LeaveManagement.Application.Features.LeaveAllocations.Handlers.Comm
 				throw new ValidationException(validationResult);
 			}
 
-			var leaveAllocation = await leaveAllocationRepository
-											.GetAsync(request.LeaveAllocationDto.Id);
+			var leaveAllocation = await unitOfWork.LeaveAllocationRepository
+                                            .GetAsync(request.LeaveAllocationDto.Id);
+			if (leaveAllocation is null)
+				throw new NotFoundException(nameof(leaveAllocation), request.LeaveAllocationDto.Id);
 
 			mapper.Map(leaveAllocation, request.LeaveAllocationDto);
 
-			await leaveAllocationRepository.UpdateAsync(leaveAllocation);
+			await unitOfWork.LeaveAllocationRepository.UpdateAsync(leaveAllocation);
+			await unitOfWork.Save();
 			return Unit.Value;
 		}
 	}

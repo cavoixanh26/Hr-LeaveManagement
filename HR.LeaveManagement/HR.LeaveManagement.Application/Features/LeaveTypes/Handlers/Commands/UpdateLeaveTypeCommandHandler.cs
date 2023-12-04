@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using HR.LeaveManagement.Application.Contracts.Persistences;
 using HR.LeaveManagement.Application.DTOs.LeaveType.Validators;
 using HR.LeaveManagement.Application.Exceptions;
 using HR.LeaveManagement.Application.Features.LeaveTypes.Requests.Commands;
@@ -14,14 +15,14 @@ namespace HR.LeaveManagement.Application.Features.LeaveTypes.Handlers.Commands
 {
 	public class UpdateLeaveTypeCommandHandler : IRequestHandler<UpdateLeaveTypeCommand, Unit>
 	{
-		private readonly ILeaveTypeRepository leaveTypeRepository;
+		private readonly IUnitOfWork unitOfWork;
 		private readonly IMapper mapper;
 
 		public UpdateLeaveTypeCommandHandler(
-			ILeaveTypeRepository leaveTypeRepository,
+            IUnitOfWork unitOfWork,
 			IMapper mapper)
 		{
-			this.leaveTypeRepository = leaveTypeRepository;
+			this.unitOfWork = unitOfWork;
 			this.mapper = mapper;
 		}
 
@@ -36,11 +37,15 @@ namespace HR.LeaveManagement.Application.Features.LeaveTypes.Handlers.Commands
 				throw new ValidationException(validationResult);
 			}
 
-			var leaveType = await leaveTypeRepository.GetAsync(request.LeaveTypeDto.Id);
+			var leaveType = await unitOfWork.LeaveTypeRepository.GetAsync(request.LeaveTypeDto.Id);
+
+			if (leaveType is null)
+				throw new NotFoundException(nameof(leaveType), request.LeaveTypeDto.Id);
 
 			mapper.Map(request.LeaveTypeDto, leaveType);
 
-			await leaveTypeRepository.UpdateAsync(leaveType);
+			await unitOfWork.LeaveTypeRepository.UpdateAsync(leaveType);
+			await unitOfWork.Save();
 			return Unit.Value;
 		}
 	}
